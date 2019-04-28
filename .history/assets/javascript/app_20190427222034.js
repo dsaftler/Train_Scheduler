@@ -52,7 +52,7 @@ database.ref().on("child_added", function (snap) {
   // $("<td>").text(trainFirst),
   $("<td>").text(nextTrain),
     $("<td> class='text-right'").text(minutesLeft)
-    );
+  );
   $("#train-table > tbody").append(newRow);
   }, function (errorObject) {
     console.log("Errors handled: " + errorObject.code)

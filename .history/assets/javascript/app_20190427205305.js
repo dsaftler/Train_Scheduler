@@ -34,31 +34,30 @@ $("#add-train-btn").on("click", function(event) {
 // this adds all the rows from the database
 database.ref().on("child_added", function (snap) {
     console.log(snap.val())
-  var minutesLeft = 0;
     let trainName = snap.val().name;
     let trainDestination = snap.val().destination;
     let trainFirst = snap.val().first;
     let trainFrequency = snap.val().frequency;
     // convert to current + next
-   minutesLeft = calcTimeLeft(trainFirst, trainFrequency);
+    let minLeft = calcTimeLeft(trainFirst, trainFrequency);
     // add frequency to first
     // convert to next to minutes from now
-  let nextTrain = calcNextTrain(minutesLeft);
+    let nextTrain = calcNextTrain(minLeft);
     // Create the new row
   let newRow = $("<tr>").append(
   $("<td>").text(trainName),
   $("<td>").text(trainDestination),
-  $("<td> class='text-right'").text(trainFrequency),
-  // $("<td>").text(trainFirst),
+  $("<td>").text(trainFrequency),
+  $("<td>").text(trainFirst),
   $("<td>").text(nextTrain),
-    $("<td> class='text-right'").text(minutesLeft)
-    );
+  $("<td>").text(minLeft)
+  );
   $("#train-table > tbody").append(newRow);
   }, function (errorObject) {
     console.log("Errors handled: " + errorObject.code)
   }); 
 function calcTimeLeft(trainFirst, trainFrequency) {
-  var minutesLeft = 0
+  let minutesLeft = 0
   let now = moment();  
   console.log("now: "+now)
 
@@ -77,29 +76,17 @@ function calcTimeLeft(trainFirst, trainFrequency) {
   // diff between now and firstTrain
   minutesLeft = now.diff(firstTrainTime, "minutes")
   console.log("Diff @74 minutes: " + minutesLeft)
-  console.log(typeof minutesLeft)
-  var myMin = minutesLeft
-  console.log("minutesLeft: " + minutesLeft)
-  console.log(typeof minutesLeft)
-  
-if (minutesLeft > 0) {
+  if (minutesLeft<0) {
+    // minutesLeft = now.diff(firstTrainTime,"minutes")
+    console.log("minutesLeft: " + minutesLeft)
+  } else if (minutesLeft>0) {
     // minutesLeft = firstTrainTime.diff(now, "minutes")
-  console.log("minutesLeft: " + minutesLeft)
-  let trainFreqNum = parseInt(trainFrequency)
-  console.log("TrainFreqNum: " + trainFreqNum)
-  let remainder = minutesLeft % trainFreqNum 
-  // 12 of 20 minutes
-   console.log(typeof remainder)
-   minutesLeft = trainFreqNum - remainder
-   }
-
-if (minutesLeft < 0) {
-  console.log("minutesLeft: " + minutesLeft)
-  minutesLeft = minutesLeft * -1
-  console.log("minutesLeft: " + minutesLeft)
-};
+    console.log(typeof trainFrequency)
+    // let remainder = minutesLeft % trainFrequency // 12 of 20 minutes
+    // console.log(typeof trainFrequency)
+    // let minutesLeft = trainFrequency - remainder
   // calculate how many cycles and remainer in minutes
-  // }
+  }
 
   // let firstTrainToUnix=moment.unix(firstTrain)
   // let timeSince = now-firstTrain;
@@ -108,9 +95,8 @@ if (minutesLeft < 0) {
   // given you know when the first Train was, the current time, and the frequency
   // how long ago was the first time, and how many trips "frequency" have elapsed?
   // how many minutes are left between now and then?
-  console.log("minutesLeft @111: " + minutesLeft)
-return minutesLeft
-
+  return minutesLeft
+  console.log("minutesLeft: "+minutesLeft)
 }
 function calcNextTrain(minutesLeft) {
   // given you know current time and minutesLeft, what time will it be then?

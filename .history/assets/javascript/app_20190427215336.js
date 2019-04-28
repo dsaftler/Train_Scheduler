@@ -48,11 +48,11 @@ database.ref().on("child_added", function (snap) {
   let newRow = $("<tr>").append(
   $("<td>").text(trainName),
   $("<td>").text(trainDestination),
-  $("<td> class='text-right'").text(trainFrequency),
-  // $("<td>").text(trainFirst),
+  $("<td>").text(trainFrequency),
+  $("<td>").text(trainFirst),
   $("<td>").text(nextTrain),
-    $("<td> class='text-right'").text(minutesLeft)
-    );
+    $("<td>").text(minutesLeft)
+  );
   $("#train-table > tbody").append(newRow);
   }, function (errorObject) {
     console.log("Errors handled: " + errorObject.code)
@@ -93,11 +93,11 @@ if (minutesLeft > 0) {
    minutesLeft = trainFreqNum - remainder
    }
 
-if (minutesLeft < 0) {
-  console.log("minutesLeft: " + minutesLeft)
-  minutesLeft = minutesLeft * -1
-  console.log("minutesLeft: " + minutesLeft)
-};
+  //  if (minutesLeft < 0) {
+  //    console.log("minutesLeft: " + minutesLeft)
+  //   minutesLeft = Math.abs(minutesLeft);
+  //    console.log("minutesLeft: " + minutesLeft)
+  //  };
   // calculate how many cycles and remainer in minutes
   // }
 
@@ -109,6 +109,7 @@ if (minutesLeft < 0) {
   // how long ago was the first time, and how many trips "frequency" have elapsed?
   // how many minutes are left between now and then?
   console.log("minutesLeft @111: " + minutesLeft)
+  minutesLeft = math.abs(minutesLeft)
 return minutesLeft
 
 }

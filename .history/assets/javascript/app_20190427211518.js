@@ -48,11 +48,11 @@ database.ref().on("child_added", function (snap) {
   let newRow = $("<tr>").append(
   $("<td>").text(trainName),
   $("<td>").text(trainDestination),
-  $("<td> class='text-right'").text(trainFrequency),
-  // $("<td>").text(trainFirst),
+  $("<td>").text(trainFrequency),
+  $("<td>").text(trainFirst),
   $("<td>").text(nextTrain),
-    $("<td> class='text-right'").text(minutesLeft)
-    );
+    $("<td>").text(minutesLeft)
+  );
   $("#train-table > tbody").append(newRow);
   }, function (errorObject) {
     console.log("Errors handled: " + errorObject.code)
@@ -79,27 +79,21 @@ function calcTimeLeft(trainFirst, trainFrequency) {
   console.log("Diff @74 minutes: " + minutesLeft)
   console.log(typeof minutesLeft)
   var myMin = minutesLeft
-  console.log("minutesLeft: " + minutesLeft)
-  console.log(typeof minutesLeft)
-  
-if (minutesLeft > 0) {
+  console.log("MyMin: "+myMin)
+  console.log(typeof myMin)
+  if (myMin<0) {
+    // minutesLeft = now.diff(firstTrainTime,"minutes")
+    console.log("minutesLeft: " + myMin)
+  } else if (myMin>0) {
     // minutesLeft = firstTrainTime.diff(now, "minutes")
-  console.log("minutesLeft: " + minutesLeft)
-  let trainFreqNum = parseInt(trainFrequency)
-  console.log("TrainFreqNum: " + trainFreqNum)
-  let remainder = minutesLeft % trainFreqNum 
-  // 12 of 20 minutes
-   console.log(typeof remainder)
-   minutesLeft = trainFreqNum - remainder
-   }
-
-if (minutesLeft < 0) {
-  console.log("minutesLeft: " + minutesLeft)
-  minutesLeft = minutesLeft * -1
-  console.log("minutesLeft: " + minutesLeft)
-};
+    console.log("myMin; " + myMin)
+    let trainFreqNum = parseInt(trainFrequency)
+    console.log("TrainFreqNum: " trainFreqNum)
+    let remainder = myMin % trainFreqNum // 12 of 20 minutes
+    console.log(typeof remainder)
+    let myMin = trainFreqNum - remainder
   // calculate how many cycles and remainer in minutes
-  // }
+  }
 
   // let firstTrainToUnix=moment.unix(firstTrain)
   // let timeSince = now-firstTrain;
@@ -108,9 +102,8 @@ if (minutesLeft < 0) {
   // given you know when the first Train was, the current time, and the frequency
   // how long ago was the first time, and how many trips "frequency" have elapsed?
   // how many minutes are left between now and then?
-  console.log("minutesLeft @111: " + minutesLeft)
-return minutesLeft
-
+  return minutesLeft
+  console.log("minutesLeft: "+minutesLeft)
 }
 function calcNextTrain(minutesLeft) {
   // given you know current time and minutesLeft, what time will it be then?

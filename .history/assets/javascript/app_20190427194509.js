@@ -34,25 +34,24 @@ $("#add-train-btn").on("click", function(event) {
 // this adds all the rows from the database
 database.ref().on("child_added", function (snap) {
     console.log(snap.val())
-  var minutesLeft = 0;
     let trainName = snap.val().name;
     let trainDestination = snap.val().destination;
     let trainFirst = snap.val().first;
     let trainFrequency = snap.val().frequency;
     // convert to current + next
-   minutesLeft = calcTimeLeft(trainFirst, trainFrequency);
+    let minLeft = calcTimeLeft(trainFirst, trainFrequency);
     // add frequency to first
     // convert to next to minutes from now
-  let nextTrain = calcNextTrain(minutesLeft);
+    let nextTrain = calcNextTrain(minLeft);
     // Create the new row
   let newRow = $("<tr>").append(
   $("<td>").text(trainName),
   $("<td>").text(trainDestination),
-  $("<td> class='text-right'").text(trainFrequency),
-  // $("<td>").text(trainFirst),
+  $("<td>").text(trainFrequency),
+  $("<td>").text(trainFirst),
   $("<td>").text(nextTrain),
-    $("<td> class='text-right'").text(minutesLeft)
-    );
+  $("<td>").text(minLeft)
+  );
   $("#train-table > tbody").append(newRow);
   }, function (errorObject) {
     console.log("Errors handled: " + errorObject.code)
@@ -68,6 +67,8 @@ function calcTimeLeft(trainFirst, trainFrequency) {
   // if time portion of now is after start? count backwards
   // if moment===moment, time is now, minutes is 0
   // console.log(trainFirst);
+ // let firstTrainTime = moment(trainFirst,"HH:mm").subtract(1,'years')   // date portion + first 
+
   let firstTrainTime = moment(today+' '+trainFirst,"YYYY-MM-DD HH:mm")   // date portion + first 
   let trainFormat = firstTrainTime.format("YYYY-MM-DD HH:mm")
   console.log("firstTrainTime: " + firstTrainTime+' '+trainFormat)
@@ -75,31 +76,23 @@ function calcTimeLeft(trainFirst, trainFrequency) {
   console.log(now-firstTrainTS)
 
   // diff between now and firstTrain
-  minutesLeft = now.diff(firstTrainTime, "minutes")
-  console.log("Diff @74 minutes: " + minutesLeft)
+  minutesLeft = moment(now).diff(moment(firstTrainTime), "minutes")
   console.log(typeof minutesLeft)
-  var myMin = minutesLeft
-  console.log("minutesLeft: " + minutesLeft)
-  console.log(typeof minutesLeft)
-  
-if (minutesLeft > 0) {
+  console.log("minutesLeft @80:" + minutesLeft)
+  minutesLeft=0;
+ // console.log("Diff @74 minutes: " + minutesLeft)
+  if (minutesLeft<0) {
+    // minutesLeft = now.diff(firstTrainTime,"minutes")
+    console.log("minutesLeft: " + minutesLeft)
+  } else {
     // minutesLeft = firstTrainTime.diff(now, "minutes")
-  console.log("minutesLeft: " + minutesLeft)
-  let trainFreqNum = parseInt(trainFrequency)
-  console.log("TrainFreqNum: " + trainFreqNum)
-  let remainder = minutesLeft % trainFreqNum 
-  // 12 of 20 minutes
-   console.log(typeof remainder)
-   minutesLeft = trainFreqNum - remainder
-   }
-
-if (minutesLeft < 0) {
-  console.log("minutesLeft: " + minutesLeft)
-  minutesLeft = minutesLeft * -1
-  console.log("minutesLeft: " + minutesLeft)
-};
+    //console.log("minutesLeft @87: " + minutesLeft)
+    let remainder = minutesLeft % trainFrequency
+    console.log("Remainder: "+remainder)
+    let minutesLeft = trainFrequency - remainder; // 12 of 20 minutes
+    console.log("minutesLeft @91: " + minutesLeft)
   // calculate how many cycles and remainer in minutes
-  // }
+  }
 
   // let firstTrainToUnix=moment.unix(firstTrain)
   // let timeSince = now-firstTrain;
@@ -108,18 +101,18 @@ if (minutesLeft < 0) {
   // given you know when the first Train was, the current time, and the frequency
   // how long ago was the first time, and how many trips "frequency" have elapsed?
   // how many minutes are left between now and then?
-  console.log("minutesLeft @111: " + minutesLeft)
-return minutesLeft
 
+  return minutesLeft
+  
 }
-function calcNextTrain(minutesLeft) {
+function calcNextTrain(minLeft) {
   // given you know current time and minutesLeft, what time will it be then?
   
   //let currTime=moment()
   //let minutesLeft=23;
 
-  let now = moment().add(minutesLeft,'minutes')
-  console.log("minutesLeft: " + minutesLeft + " now: " +now)
+  let now = moment().add(minLeft,'minutes')
+  console.log("minutesLeft: " + minLeft + " now: " +now)
   let nextArrival = now.format("ddd h:mmA")
   return nextArrival
   };

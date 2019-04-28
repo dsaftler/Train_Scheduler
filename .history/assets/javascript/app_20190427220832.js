@@ -48,11 +48,11 @@ database.ref().on("child_added", function (snap) {
   let newRow = $("<tr>").append(
   $("<td>").text(trainName),
   $("<td>").text(trainDestination),
-  $("<td> class='text-right'").text(trainFrequency),
+  $("<td>").text(trainFrequency),
   // $("<td>").text(trainFirst),
   $("<td>").text(nextTrain),
-    $("<td> class='text-right'").text(minutesLeft)
-    );
+    $("<td>").text(minutesLeft)
+  );
   $("#train-table > tbody").append(newRow);
   }, function (errorObject) {
     console.log("Errors handled: " + errorObject.code)
