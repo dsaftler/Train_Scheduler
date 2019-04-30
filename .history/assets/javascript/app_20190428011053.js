@@ -7,7 +7,7 @@ const config = {
   storageBucket: "trains-566c2.appspot.com",
   messagingSenderId: "625190360747"
 };
-var trKey
+
 firebase.initializeApp(config)
 const database = firebase.database();
 $("#add-train-btn").on("click", function(event) {
@@ -24,10 +24,7 @@ $("#add-train-btn").on("click", function(event) {
       first: trainFirst,
       frequency: trainFrequency
       };
-  ;
-// trKey = database.ref().push(newTrain)
-  trKey = database.ref().child("trains-566c2").push().key;
-  console.log("key: "+trKey)
+  database.ref().push(newTrain);
 
   $("#train-name-input").val("");
   $("#destination-input").val("");
@@ -37,14 +34,9 @@ $("#add-train-btn").on("click", function(event) {
 // this adds all the rows from the database
 database.ref().on("child_added", function (snap) {
     console.log(snap.val())
-   var  trKey=snap.key
-   
   var minutesLeft = 0;
     let trainName = snap.val().name;
     let trainDestination = snap.val().destination;
-   // let trainKey = snap.name();
-      let trainKey = trKey;
-  // console.log(trainKey)
     let trainFirst = snap.val().first;
     let trainFrequency = snap.val().frequency;
     // convert to current + next
@@ -60,18 +52,14 @@ database.ref().on("child_added", function (snap) {
   // $("<td>").text(trainFirst),
   $("<td>").text(nextTrain),
   $("<td> class='text-right'").text(minutesLeft),
-    $("<td>").text(trainKey),
-    $("<td><a href=trKey>Edit</a></td>")) 
+  $("<td><button class='btn'>Edit</button></td>")) 
   $("#train-table > tbody").append(newRow);
   }
   , function (errorObject) {
     console.log("Errors handled: " + errorObject.code)
   }); 
 
-// $(document).on("click", "#train-table tbody tr td button.btn", function () { // any button
-//   // console.log($(this).val());
-//   console.log("clicked a row")
-// });
+
 function calcTimeLeft(trainFirst, trainFrequency) {
   var minutesLeft = 0
   let now = moment();  
